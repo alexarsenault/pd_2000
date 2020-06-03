@@ -12,6 +12,8 @@ def take_picture():
     now = datetime.now()
     pic_name = now.strftime("%m_%d_%Y_%H_%M_%S.jpg")
     print(pic_name)
+
+    # set up the camera
     camera = PiCamera()
     camera.rotation = 180
 
@@ -20,9 +22,12 @@ def take_picture():
     camera.capture(pic_name)
     camera.stop_preview()
     print("took a picture!")
+    camera.close()
 
+    return pic_name
 
 def send_email(pic_name):
+    print("send_email function - pic name is:" + pic_name)
     port = 465
     email = "pumptydumpty2000@gmail.com"
     password = "irrigate2020"
@@ -34,7 +39,7 @@ def send_email(pic_name):
     message["From"] = email
     message["To"] = email
 
-    with open(pic_name, "rb") as f:
+    with open("/home/pi/" + pic_name, "rb") as f:
         mime = MIMEBase("image", "jpg", filename=pic_name)
         mime.add_header("Content-Disposition", "attachment", filename=pic_name)
         mime.add_header("X-Attachment-Id", "0")
@@ -63,9 +68,6 @@ def send_email(pic_name):
     print("sending email...")
 
 def main():
-    # cleanup the GPIO
-    GPIO.cleanup()
-
     # pin number
     gpio_out = 7
 
@@ -73,23 +75,34 @@ def main():
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(gpio_out, GPIO.OUT)
 
-    # initialize the pin value
-    GPIO.output(gpio_out, GPIO.LOW)
-
-    # toggle the pin value every 10 seconds
-    while True:
-        sleep(10)
-        print("switching output value on! woohoo!!!")
+    try:
+        print("setting GPIO high")
+        # initialize the pin value
         GPIO.output(gpio_out, GPIO.HIGH)
-        sleep(10)
-        print("switching output value off!")
-        GPIO.output(gpio_out, GPIO.LOW)
 
-        # take picture and get the file name
-        pic_name=take_picture()
+        # toggle the pin value every 10 seconds
+        while True:
+            sleep(10)
+            print("switching output value on! woohoo!!!")
+            GPIO.output(gpio_out, GPIO.LOW)
 
-	# call send email function
-        send_email(pic_name)
+            sleep(10)
+            print("switching output value off!")
+            GPIO.output(gpio_out, GPIO.HIGH)
+
+            # take picture and get the file name
+            pic_name=take_picture()
+
+   	    # call send email function
+            send_email(pic_name)
+
+    except KeyboardInterrupt:
+        print("Keyboard interrupt")
+
+    finally:
+        print("cleanup")
+        GPIO.cleanup()
+
 
 if __name__ == "__main__":
 	main()
