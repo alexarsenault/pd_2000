@@ -82,16 +82,16 @@ def main():
 
         # toggle the pin value every 10 seconds
         while True:
-            sleep(10)
+            sleep(36000)
             print("switching output value on! woohoo!!!")
             GPIO.output(gpio_out, GPIO.LOW)
+            
+            # take pictures and get the file name
+            pic_name=take_picture()
 
             sleep(10)
             print("switching output value off!")
             GPIO.output(gpio_out, GPIO.HIGH)
-
-            # take picture and get the file name
-            pic_name=take_picture()
 
    	    # call send email function
             send_email(pic_name)
