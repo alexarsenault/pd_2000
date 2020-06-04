@@ -53,7 +53,7 @@ def send_email(pic_name):
       <html>
        <body>
          <h1>Garden Automation Update:</h1>
-         <p>Your garden has been watered by Pumpty Dumpty 2000!</p>
+         <p>Your garden has been watered by Pumpty Dumpty 2000! Your plants are looking GREAT.</p>
        </body>
       </html>
     """
@@ -82,10 +82,9 @@ def main():
 
         # toggle the pin value every 10 seconds
         while True:
-            sleep(36000)
             print("switching output value on! woohoo!!!")
             GPIO.output(gpio_out, GPIO.LOW)
-            
+
             # take pictures and get the file name
             pic_name=take_picture()
 
@@ -95,6 +94,9 @@ def main():
 
    	    # call send email function
             send_email(pic_name)
+
+           # wait 12 hours
+            sleep(43200)
 
     except KeyboardInterrupt:
         print("Keyboard interrupt")
