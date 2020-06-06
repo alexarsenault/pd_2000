@@ -18,7 +18,7 @@ def take_picture():
     camera.rotation = 180
 
     camera.start_preview()
-    sleep(5)
+    sleep(3)
     camera.capture(pic_name)
     camera.stop_preview()
     print("took a picture!")
@@ -75,6 +75,22 @@ def main():
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(gpio_out, GPIO.OUT)
 
+    # initialization sequence
+    GPIO.output(gpio_out, GPIO.HIGH)
+    sleep(.5)
+    GPIO.output(gpio_out, GPIO.LOW)
+    sleep(.5)
+    GPIO.output(gpio_out, GPIO.HIGH)
+    sleep(.5)
+    GPIO.output(gpio_out, GPIO.LOW)
+    sleep(.5)
+    GPIO.output(gpio_out, GPIO.HIGH)
+    sleep(.5)
+    GPIO.output(gpio_out, GPIO.LOW)
+    sleep(.5)
+    GPIO.output(gpio_out, GPIO.HIGH)
+    sleep(.5)
+
     try:
         print("setting GPIO high")
         # initialize the pin value
@@ -88,7 +104,7 @@ def main():
             # take pictures and get the file name
             pic_name=take_picture()
 
-            sleep(10)
+            sleep(4)
             print("switching output value off!")
             GPIO.output(gpio_out, GPIO.HIGH)
 
